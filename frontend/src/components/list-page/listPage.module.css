@@ -1,0 +1,30 @@
+.draggableItemContainer {
+  padding: 16px;
+  margin: 0 0 16px 0;
+  border-radius: 5px;
+  border: 0.5px solid #cdd2d4;
+  position: relative;
+}
+
+.editIcon,
+.deleteIcon,
+.saveIcon {
+  transition: all 0.3s;
+  cursor: pointer;
+  padding-bottom: 5px;
+}
+
+.editIcon {
+  filter: invert(77%) sepia(98%) saturate(756%) hue-rotate(330deg)
+    brightness(103%) contrast(98%);
+}
+
+.saveIcon {
+  filter: invert(34%) sepia(14%) saturate(2393%) hue-rotate(188deg)
+    brightness(110%) contrast(92%);
+}
+
+.deleteIcon {
+  filter: invert(53%) sepia(80%) saturate(6721%) hue-rotate(335deg)
+    brightness(120%) contrast(92%);
+}
