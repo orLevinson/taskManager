@@ -1,26 +1,28 @@
+import { useContext } from "react";
 import { DraggingStyle, NotDraggingStyle } from "react-beautiful-dnd";
 import droppableId from "../../types/droppableId";
 import listItem from "../../types/listItem";
 import { baseListStyles } from "../styles/draggableStyles";
+import listCtx from "../context/ListCtx";
 
 const useDraggables = () => {
+  const { setItemStatus } = useContext(listCtx);
   // fake data generator
+  const possiblePeople = [
+    "אור לוינזון",
+    "ניר סוויסה",
+    "מיטל אביב",
+    "אלעד חן",
+    "פריאל כהן",
+  ];
+
+  const possibleProjects = ["מזון", "היסעים", "משהו"];
 
   const getItems: (
     index: number,
     count: number,
     offset?: number
   ) => listItem[] = (index, count, offset = 0) => {
-    const possiblePeople = [
-      "אור לוינזון",
-      "ניר סוויסה",
-      "מיטל אביב",
-      "אלעד חן",
-      "פריאל כהן",
-    ];
-
-    const possibleProjects = ["מזון", "היסעים", "משהו"];
-
     return Array.from({ length: count }, (v, k) => k).map((k) => ({
       id: `item-${k + offset}-${new Date().getTime()}`,
       taskName: `משימה ${k + offset}`,
@@ -32,7 +34,7 @@ const useDraggables = () => {
       }),
       deadLine: Math.random() > 0.5 ? new Date() : undefined,
       status: index,
-      comment: Math.random() > 0.5 ? "הערות הערות" : undefined
+      comment: Math.random() > 0.5 ? "הערות הערות" : undefined,
     }));
   };
   const reorder = (list: listItem[], startIndex: number, endIndex: number) => {
@@ -46,36 +48,28 @@ const useDraggables = () => {
   /**
    * Moves an item from one list to another list.
    */
-  const moveItem = (id: string, destArr: listItem[], destIndex: number) => {
-    return destArr.map((item) => {
-      if (item.id === id) {
-        let newItem = { ...item };
-        newItem.status = destIndex;
-        return newItem;
-      } else {
-        return item;
-      }
-    });
-  };
+  // const moveItem = (id: string, destArr: listItem[], destIndex: number) => {
+  //   return destArr.map((item) => {
+  //     if (item.id === id) {
+  //       destIndex;
+  //       return newItem;
+  //     } else {
+  //       return item;
+  //     }
+  //   });
+  // };
 
   const move = (
     source: listItem[],
     destination: listItem[],
     droppableSource: droppableId,
     droppableDestination: droppableId,
-    draggableId: string
   ) => {
     const sourceClone = Array.from(source);
     let destClone = Array.from(destination);
     const [removed] = sourceClone.splice(droppableSource.index, 1);
 
     destClone.splice(droppableDestination.index, 0, removed);
-
-    destClone = moveItem(
-      draggableId,
-      destClone,
-      +droppableDestination.droppableId
-    );
 
     const result: { [key: string]: listItem[] } = {};
     result[droppableSource.droppableId] = sourceClone;
@@ -123,6 +117,8 @@ const useDraggables = () => {
   });
 
   return {
+    possiblePeople,
+    possibleProjects,
     getItems,
     reorder,
     move,

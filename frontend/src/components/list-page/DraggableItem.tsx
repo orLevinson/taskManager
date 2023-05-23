@@ -3,9 +3,6 @@ import { Draggable } from "react-beautiful-dnd";
 import useDraggables from "../../shared/hooks/useDraggables";
 import DraggableProps from "../../types/DraggableProps";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
 import { Divider } from "@mui/material";
 import styles from "./listPage.module.css";
 import DraggableFunctions from "./DraggableFunctions";
@@ -13,7 +10,6 @@ import DraggableContent from "./DraggableContent";
 
 const DraggableItem = ({ item, index }: DraggableProps) => {
   const { getItemStyle } = useDraggables();
-  const [inEditMode, setEditMode] = useState(false);
 
   const isOverdue = useMemo(() => {
     if (item.deadLine) {
@@ -50,10 +46,7 @@ const DraggableItem = ({ item, index }: DraggableProps) => {
             <Divider orientation="vertical" flexItem />
             <DraggableContent item={item} />
             <Divider orientation="vertical" flexItem />
-            <DraggableFunctions
-              setEditMode={setEditMode}
-              inEditMode={inEditMode}
-            />
+            <DraggableFunctions item={item} index={index} />
           </div>
         </div>
       )}

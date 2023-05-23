@@ -1,16 +1,12 @@
-import { useState } from "react";
+import { useContext } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import DroppableList from "./components/list-page/DroppableList";
+import listCtx from "./shared/context/ListCtx";
 import useDraggables from "./shared/hooks/useDraggables";
 
 function App() {
-  const { getItems, reorder, move } = useDraggables();
-
-  const [state, setState] = useState([
-    getItems(0, 10),
-    getItems(1, 5, 10),
-    getItems(2, 5, 15),
-  ]);
+  const { reorder, move } = useDraggables();
+  const { data, setState, setItemStatus } = useContext(listCtx);
 
   // add new items
   // onClick={() => {
@@ -29,23 +25,22 @@ function App() {
     const dInd = +destination.droppableId;
 
     if (sInd === dInd) {
-      const items = reorder(state[sInd], source.index, destination.index);
-      const newState = [...state];
+      const items = reorder(data[sInd], source.index, destination.index);
+      const newState = [...data];
       newState[sInd] = items;
       setState(newState);
     } else {
-      const result = move(
-        state[sInd],
-        state[dInd],
-        source,
-        destination,
-        draggableId
-      );
-      const newState = [...state];
+      const result = move(data[sInd], data[dInd], source, destination);
+      const newState = [...data];
       newState[sInd] = result[sInd];
       newState[dInd] = result[dInd];
 
-      setState(newState);
+      setItemStatus(
+        newState,
+        destination.index,
+        draggableId,
+        +destination.droppableId
+      );
     }
   }
 
@@ -62,7 +57,7 @@ function App() {
         }}
       >
         <DragDropContext onDragEnd={onDragEnd}>
-          {state.map((element, index) => (
+          {data.map((element, index) => (
             <DroppableList key={index} element={element} index={index} />
           ))}
         </DragDropContext>

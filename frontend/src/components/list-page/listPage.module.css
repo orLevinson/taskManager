@@ -28,3 +28,9 @@
   filter: invert(53%) sepia(80%) saturate(6721%) hue-rotate(335deg)
     brightness(120%) contrast(92%);
 }
+
+.datePopper {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+}

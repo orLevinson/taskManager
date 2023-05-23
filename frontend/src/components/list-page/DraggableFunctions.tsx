@@ -1,37 +1,41 @@
+import { useState, useContext } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
 import styles from "./listPage.module.css";
+import EditDraggable from "./EditDraggable";
+import DraggableProps from "../../types/DraggableProps";
+import listCtx from "../../shared/context/ListCtx";
 
-const DraggableFunctions = ({
-  setEditMode,
-  inEditMode,
-}: {
-  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
-  inEditMode: boolean;
-}) => {
+const DraggableFunctions = ({ item, index }: DraggableProps) => {
+  const [inEdit, setInedit] = useState(false);
+  const { deleteItem } = useContext(listCtx);
+
   return (
-    <div>
-      <DeleteIcon className={styles.deleteIcon} />
-      {!inEditMode && (
-        <div
+    <>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <DeleteIcon
+          className={styles.deleteIcon}
           onClick={() => {
-            setEditMode(true);
+            deleteItem(index, item.id, item.status);
           }}
-        >
-          <EditIcon className={styles.editIcon} fontSize="small" />
-        </div>
-      )}
-      {inEditMode && (
-        <div
+        />
+        <EditIcon
+          className={styles.editIcon}
+          fontSize="small"
           onClick={() => {
-            setEditMode(false);
+            setInedit(true);
           }}
-        >
-          <SaveIcon className={styles.saveIcon} fontSize="small" />
-        </div>
+        />
+      </div>
+      {inEdit && (
+        <EditDraggable
+          inEdit={inEdit}
+          setInEdit={setInedit}
+          index={index}
+          item={item}
+        />
       )}
-    </div>
+    </>
   );
 };
 

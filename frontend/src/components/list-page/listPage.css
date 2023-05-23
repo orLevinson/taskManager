@@ -1,0 +1,9 @@
+.react-datepicker {
+  position: absolute;
+  z-index: 3;
+  top:48px;
+}
+
+.datePicker-container {
+  position: relative;
+}
