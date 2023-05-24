@@ -5,7 +5,7 @@ import { listReducerType } from "../../types/ListCtxTypes";
 const useList = () => {
   const listReducer: Reducer<listItem[][], listReducerType> = useCallback(
     (state, action) => {
-      let clone = [...state];
+      let clone: listItem[][] = [...state];
       switch (action.type) {
         case "add":
           if (
@@ -15,13 +15,13 @@ const useList = () => {
             action.otherMembers !== undefined &&
             Array.isArray(action.otherMembers)
           )
-            clone[0].push({
+            clone[1].unshift({
               id: new Date().getTime() + Math.random() + "",
               taskName: action.taskName,
               leader: action.leader,
               project: action.project,
               otherMembers: action.otherMembers,
-              status: 0,
+              status: 1,
               deadLine: action.deadLine,
               comment: action.comment,
             });

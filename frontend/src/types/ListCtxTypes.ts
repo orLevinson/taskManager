@@ -1,5 +1,14 @@
 import listItem from "./listItem";
 
+export type addItemProperties = {
+  taskName: string;
+  leader: string;
+  project: string;
+  otherMembers: string[];
+  deadLine?: Date | undefined;
+  comment?: string | undefined;
+};
+
 export type addItemType = (
   taskName: string,
   leader: string,

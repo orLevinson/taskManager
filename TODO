@@ -1,0 +1,3 @@
+-When projects changes, need to refetch data
+-When sending a call to server, check if deadline is overdue and put
+the overdue missions in col 0

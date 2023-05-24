@@ -2,21 +2,11 @@ import { useContext } from "react";
 import { DraggingStyle, NotDraggingStyle } from "react-beautiful-dnd";
 import droppableId from "../../types/droppableId";
 import listItem from "../../types/listItem";
+import sectorCtx from "../context/SectorCtx";
 import { baseListStyles } from "../styles/draggableStyles";
-import listCtx from "../context/ListCtx";
 
 const useDraggables = () => {
-  const { setItemStatus } = useContext(listCtx);
-  // fake data generator
-  const possiblePeople = [
-    "אור לוינזון",
-    "ניר סוויסה",
-    "מיטל אביב",
-    "אלעד חן",
-    "פריאל כהן",
-  ];
-
-  const possibleProjects = ["מזון", "היסעים", "משהו"];
+  const { people, projects } = useContext(sectorCtx);
 
   const getItems: (
     index: number,
@@ -26,10 +16,9 @@ const useDraggables = () => {
     return Array.from({ length: count }, (v, k) => k).map((k) => ({
       id: `item-${k + offset}-${new Date().getTime()}`,
       taskName: `משימה ${k + offset}`,
-      leader: possiblePeople[Math.floor(Math.random() * possiblePeople.length)],
-      project:
-        possibleProjects[Math.floor(Math.random() * possibleProjects.length)],
-      otherMembers: possiblePeople.filter((i) => {
+      leader: people[Math.floor(Math.random() * people.length)],
+      project: projects[Math.floor(Math.random() * projects.length)],
+      otherMembers: people.filter((i) => {
         return i && Math.random() > 0.5;
       }),
       deadLine: Math.random() > 0.5 ? new Date() : undefined,
@@ -45,25 +34,11 @@ const useDraggables = () => {
     return result.length > 0 ? result : [];
   };
 
-  /**
-   * Moves an item from one list to another list.
-   */
-  // const moveItem = (id: string, destArr: listItem[], destIndex: number) => {
-  //   return destArr.map((item) => {
-  //     if (item.id === id) {
-  //       destIndex;
-  //       return newItem;
-  //     } else {
-  //       return item;
-  //     }
-  //   });
-  // };
-
   const move = (
     source: listItem[],
     destination: listItem[],
     droppableSource: droppableId,
-    droppableDestination: droppableId,
+    droppableDestination: droppableId
   ) => {
     const sourceClone = Array.from(source);
     let destClone = Array.from(destination);
@@ -117,8 +92,6 @@ const useDraggables = () => {
   });
 
   return {
-    possiblePeople,
-    possibleProjects,
     getItems,
     reorder,
     move,

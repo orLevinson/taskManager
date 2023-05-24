@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import listItem from "../../types/listItem";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -7,29 +6,30 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import useDraggables from "../../shared/hooks/useDraggables";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./listPage.css";
 import listCtx from "../../shared/context/ListCtx";
 import sectorCtx from "../../shared/context/SectorCtx";
+import { addItemProperties } from "../../types/ListCtxTypes";
 
 const filter = createFilterOptions<string>();
 
-const EditDraggable = ({
-  item,
-  index,
+const AddDraggable = ({
   inEdit,
   setInEdit,
 }: {
-  item: listItem;
-  index: number;
   inEdit: boolean;
   setInEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { editItem } = useContext(listCtx);
+  const { addItem } = useContext(listCtx);
   const { people, projects } = useContext(sectorCtx);
-  const [data, setData] = useState(item);
+  const [data, setData] = useState<addItemProperties>({
+    taskName: "",
+    leader: "",
+    project: "",
+    otherMembers: [],
+  });
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -43,7 +43,7 @@ const EditDraggable = ({
       }}
     >
       <DialogTitle>
-        <div>ערוך את {item.taskName}</div>
+        <div>צור משימה</div>
       </DialogTitle>
       <DialogContent>
         <div className="datePicker-container">
@@ -200,14 +200,11 @@ const EditDraggable = ({
           color="success"
           variant="contained"
           onClick={() => {
-            editItem(
-              index,
-              data.id,
+            addItem(
               data.taskName,
               data.leader,
               data.project,
               data.otherMembers,
-              data.status,
               data.deadLine,
               data.comment
             );
@@ -221,4 +218,4 @@ const EditDraggable = ({
   );
 };
 
-export default EditDraggable;
+export default AddDraggable;
