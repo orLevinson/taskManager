@@ -1,0 +1,45 @@
+.container {
+  width: 90%;
+  max-height: 100%;
+  border-radius: 5px;
+  border: 0.5px solid #cdd2d4;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  display: flex;
+  margin: auto;
+}
+
+.background,
+.formContainer {
+  width: 50%;
+}
+
+.background img {
+  height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.formContainer {
+  padding: 50px;
+}
+
+.form {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.buttonsRow {
+  padding-top: 20px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.button {
+  flex: 1;
+}

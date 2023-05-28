@@ -1,5 +1,10 @@
+import { Button } from "@mui/material";
+import { useContext } from "react";
 import Logo from "../../assets/Logo.webp";
+import userCtx from "../context/UserCtx";
 const Navbar = () => {
+  const { name, token, logout } = useContext(userCtx);
+
   return (
     <div
       style={{
@@ -25,13 +30,26 @@ const Navbar = () => {
           }}
         >
           <img src={Logo} style={{ height: "2rem" }} alt="logo" />
-          <span style={{ fontSize: "1.5rem",fontWeight:"bold", lineHeight: "80%" }}>
+          <span
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              lineHeight: "80%",
+            }}
+          >
             מערכת משימות
           </span>
         </div>
         <div></div>
       </div>
-      <div>שלום, שם</div>
+      {token && (
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+          <div>שלום, {name}</div>
+          <Button variant="text" color={"error"} onClick={logout}>
+            התנתק
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
