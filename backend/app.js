@@ -7,6 +7,7 @@ const HttpError = require("./models/http-error");
 const roomsRouter = require("./routes/rooms-routes");
 const projectsRouter = require("./routes/projects-routes");
 const usersRouter = require("./routes/users-router");
+const messagesRouter = require("./routes/messages-routes");
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(cors(corsOptions));
 app.use("/api/rooms", roomsRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/messages", messagesRouter);
 
 // if none of the mentioned routes above were called
 app.use((req, res, next) => {

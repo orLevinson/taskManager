@@ -6,18 +6,20 @@ class Message {
     this.errFunction = errFunction;
   }
 
-  async getAllByRoom(project_id) {
+  async getAllByRoom(room_id) {
     let result = [];
     try {
       const { rows } = await db.query(
         `SELECT *
          FROM messages 
-         WHERE project_id=$1`,
-        [project_id]
+         WHERE project_id 
+         IN (SELECT project_id 
+        FROM projects WHERE room_id=$1)`,
+        [room_id]
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't fetch users", 500));
+      return this.errFunction(new HttpError("couldn't fetch messages", 500));
     }
     return result;
   }
@@ -40,7 +42,7 @@ class Message {
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't fetch user", 500));
+      return this.errFunction(new HttpError("couldn't add messages", 500));
     }
     return result;
   }
@@ -57,7 +59,7 @@ class Message {
     let result = [];
     try {
       const { rows } = await db.query(
-        `UPDATE messages SET task_name=$1 user_id=$2 project_id=$3 other_members=$4 dead_line=$5 comment=$6 
+        `UPDATE messages SET task_name=$1, user_id=$2, project_id=$3, other_members=$4, dead_line=$5, comment=$6 
          WHERE message_id=$7
          RETURNING *`,
         [
@@ -72,7 +74,7 @@ class Message {
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't add room", 500));
+      return this.errFunction(new HttpError("couldn't change message", 500));
     }
     return result;
   }
@@ -88,7 +90,7 @@ class Message {
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't change room", 500));
+      return this.errFunction(new HttpError("couldn't change message", 500));
     }
     return result;
   }
@@ -98,12 +100,12 @@ class Message {
     try {
       const { rows } = await db.query(
         `DELETE FROM messages
-        WHERE message_id = $1;`,
+        WHERE message_id = $1 RETURNING *;`,
         [message_id]
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't change room", 500));
+      return this.errFunction(new HttpError("couldn't delete message", 500));
     }
     return result;
   }
@@ -114,12 +116,12 @@ class Message {
       const { rows } = await db.query(
         `
         UPDATE messages SET status = 0 
-        WHERE dead_line <= CURRENT_DATE;
+        WHERE dead_line <= CURRENT_DATE AND status=1;
     `
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't delete room", 500));
+      return this.errFunction(new HttpError("couldn't update statuses", 500));
     }
     return result;
   }

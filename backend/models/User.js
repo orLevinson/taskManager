@@ -32,7 +32,7 @@ class User {
       );
       result = rows;
     } catch (error) {
-      return this.errFunction(new HttpError("couldn't fetch user", 500));
+      return this.errFunction(new HttpError("couldn't check user", 500));
     }
     return result;
   }
@@ -81,7 +81,7 @@ class User {
       );
       result = rows;
     } catch (error) {
-      return this.errFunction(new HttpError("couldn't add room", 500));
+      return this.errFunction(new HttpError("couldn't add user", 500));
     }
     return result;
   }
@@ -97,7 +97,7 @@ class User {
       );
       result = rows;
     } catch (error) {
-      return this.errFunction(new HttpError("couldn't change room", 500));
+      return this.errFunction(new HttpError("couldn't change user's room", 500));
     }
     return result;
   }
@@ -113,7 +113,7 @@ class User {
       );
       result = rows;
     } catch (error) {
-      return this.errFunction(new HttpError("couldn't change room", 500));
+      return this.errFunction(new HttpError("couldn't change user's privilege", 500));
     }
     return result;
   }
