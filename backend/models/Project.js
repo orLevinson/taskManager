@@ -15,7 +15,7 @@ class Project {
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't fetch projects", 500));
+      return this.errFunction(new HttpError("couldn't fetch projects", 500));
     }
     return result;
   }
@@ -24,12 +24,12 @@ class Project {
     let result = [];
     try {
       const { rows } = await db.query(
-        "INSERT INTO prjects(project_name,room_id) VALUES ($1,$2) RETURNING project_id,project_name,room_id",
+        "INSERT INTO projects(project_name,room_id) VALUES ($1,$2) RETURNING project_id,project_name,room_id",
         [project_name, room_id]
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't add project", 500));
+      return this.errFunction(new HttpError("couldn't add project", 500));
     }
     return result;
   }
@@ -43,7 +43,7 @@ class Project {
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't change project", 500));
+      return this.errFunction(new HttpError("couldn't change project", 500));
     }
     return result;
   }
@@ -51,19 +51,26 @@ class Project {
   async deleteById(project_id) {
     let result = [];
     try {
-      const { rows } = await db.query(
+      await db.query(`BEGIN`);
+      await db.query(
         `
       DELETE FROM Messages
       WHERE project_id = $1
-    
+      `,
+        [project_id]
+      );
+      const { rows } = await db.query(
+        `
       DELETE FROM Projects
       WHERE project_id = $1;
     `,
         [project_id]
       );
+      await db.query(`COMMIT`);
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't delete project", 500));
+      await db.query(`ROLLBACK`);
+      return this.errFunction(new HttpError("couldn't delete project", 500));
     }
     return result;
   }

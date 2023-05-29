@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const Room = require("./models/Room");
 
 const HttpError = require("./models/http-error");
+
+const roomsRouter = require("./routes/rooms-routes");
+const projectsRouter = require("./routes/projects-routes");
+const usersRouter = require("./routes/users-router");
 
 const app = express();
 
@@ -26,11 +29,15 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use("/", async (req, res, next) => {
-  const room = new Room(next);
-  const answer = await room.getAll();
-  res.json(answer);
-});
+// app.use("/", async (req, res, next) => {
+//   const room = new Room(next);
+//   const answer = await room.getAll();
+//   res.json(answer);
+// });
+
+app.use("/api/rooms", roomsRouter);
+app.use("/api/projects", projectsRouter);
+app.use("/api/users", usersRouter);
 
 // if none of the mentioned routes above were called
 app.use((req, res, next) => {

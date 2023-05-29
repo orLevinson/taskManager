@@ -12,7 +12,7 @@ class Room {
       const { rows } = await db.query("SELECT * FROM rooms");
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't fetch rooms", 500));
+      return this.errFunction(new HttpError("couldn't fetch rooms", 500));
     }
     return result;
   }
@@ -26,7 +26,7 @@ class Room {
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't add room", 500));
+      return this.errFunction(new HttpError("couldn't add room", 500));
     }
     return result;
   }
@@ -40,7 +40,7 @@ class Room {
       );
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't change room", 500));
+      return this.errFunction(new HttpError("couldn't change room", 500));
     }
     return result;
   }
@@ -48,29 +48,40 @@ class Room {
   async deleteById(room_id) {
     let result = [];
     try {
-      const { rows } = await db.query(
+      await db.query(`BEGIN`);
+      await db.query(
         `
       DELETE FROM messages
       WHERE project_id IN (
         SELECT project_id
         FROM projects
         WHERE room_id = $1
-      );
-    
-      DELETE FROM users
-      WHERE room_id = $1;
-    
-      DELETE FROM projects
-      WHERE room_id = $1;
-    
-      DELETE FROM rooms
-      WHERE room_id = $1;
-    `,
+      ) RETURNING message_id;`,
         [room_id]
       );
+      await db.query(
+        `
+        DELETE FROM users
+        WHERE room_id = $1;`,
+        [room_id]
+      );
+      await db.query(
+        `
+        DELETE FROM projects
+        WHERE room_id = $1;`,
+        [room_id]
+      );
+      const { rows } = await db.query(
+        `
+        DELETE FROM rooms
+        WHERE room_id = $1;`,
+        [room_id]
+      );
+      await db.query(`COMMIT`);
       result = rows;
     } catch (error) {
-      this.errFunction(HttpError("couldn't delete room", 500));
+      await db.query(`ROLLBACK`)
+      return this.errFunction(new HttpError("couldn't delete room", 500));
     }
     return result;
   }
