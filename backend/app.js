@@ -9,6 +9,8 @@ const projectsRouter = require("./routes/projects-routes");
 const usersRouter = require("./routes/users-router");
 const messagesRouter = require("./routes/messages-routes");
 
+const globalController = require("./middleware/global-controller");
+
 const app = express();
 
 //Parse any incoming request body and extract any json data that is in there converted to regular javascript data structure (object,array...) and than call next autometically to reach the next middleware inline
@@ -64,5 +66,17 @@ app.use((error, req, res, next) => {
   });
 });
 
-app.listen(process.env.PORT || 5000);
-console.log("Server is up and running!");
+const startServer = async () => {
+  console.log("loading DB Schema");
+  const deployDBSchema = await globalController.deployDbSchema();
+  if (deployDBSchema && deployDBSchema.success) {
+    console.log("Schema Was Deployed Successfully!");
+    app.listen(process.env.PORT || 5000);
+    console.log("Server is up and running!");
+  } else {
+    console.log("Deploying Schema to DB was UnsuccessFull");
+    return 0;
+  }
+};
+
+startServer();

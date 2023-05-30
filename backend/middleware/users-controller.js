@@ -69,6 +69,7 @@ const register = async (req, res, next) => {
         room_id: added_user[0].room_id,
         room_name: added_user[0].room_name,
         is_admin: added_user[0].is_admin,
+        name: added_user[0].full_name,
       },
     });
   }
@@ -144,6 +145,7 @@ const login = async (req, res, next) => {
         room_id: user[0].room_id,
         room_name: user[0].room_name,
         is_admin: user[0].is_admin,
+        name: user[0].full_name,
       },
     });
   } else {
@@ -156,7 +158,23 @@ const login = async (req, res, next) => {
 };
 
 const checkToken = async (req, res, next) => {
+  const { userId } = req.userData;
+
   const UsersController = new User(next);
+
+  const user = await UsersController.getById(userId);
+
+  if (user && Array.isArray(user) && user.length === 1) {
+    res.json({
+      success,
+      userData: {
+        room_id: user[0].room_id,
+        room_name: user[0].room_name,
+        is_admin: user[0].is_admin,
+        name: user[0].full_name,
+      },
+    });
+  }
 };
 
 const getAllUsers = async (req, res, next) => {

@@ -2,6 +2,7 @@ const express = require("express");
 const { check, param } = require("express-validator");
 
 const usersController = require("../middleware/users-controller");
+const authController = require("../middleware/auth-controller");
 
 const router = express.Router();
 
@@ -34,13 +35,14 @@ router.post(
 );
 
 // only admins and regular users are able to preform the actions from this point forward
-// router.use(checkAuth);
+router.use(authController.getAuth);
 
 // only regular users
 // check token validity
 router.get("/check", usersController.checkToken);
 
 // only admins
+router.use(authController.checkIfAdmin);
 
 // get all users info
 router.get("/", usersController.getAllUsers);

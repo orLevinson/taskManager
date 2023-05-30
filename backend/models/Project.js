@@ -20,6 +20,20 @@ class Project {
     return result;
   }
 
+  async checkIfInRoomId(project_id, room_id) {
+    let result = false;
+    try {
+      const { rows } = await db.query(
+        "SELECT * FROM projects WHERE room_id=$1 AND project_id=$2",
+        [room_id, project_id]
+      );
+      result = rows.length > 0 ? true : false;
+    } catch (error) {
+      return this.errFunction(new HttpError("couldn't fetch projects", 500));
+    }
+    return result;
+  }
+
   async addByRoomId(project_name, room_id) {
     let result = [];
     try {

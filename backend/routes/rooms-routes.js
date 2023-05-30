@@ -2,12 +2,12 @@ const express = require("express");
 const { check, param } = require("express-validator");
 
 const roomsController = require("../middleware/rooms-controller");
+const authController = require("../middleware/auth-controller");
 
 const router = express.Router();
 
 // only admins able to preform the actions from this point forward
-// router.use(checkAuth);
-
+router.use(authController.getAuth, authController.checkIfAdmin);
 
 router.get("/", roomsController.getAllRooms);
 

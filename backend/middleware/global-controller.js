@@ -7,7 +7,7 @@ const dbSchema = require("../models/dbSchema");
 
 const deployDbSchema = async () => {
   const dbSchemaController = new dbSchema();
-  const isSuccessful = dbSchema.UpdateStatusForAll();
+  const isSuccessful = await dbSchemaController.UpdateStatusForAll();
   return isSuccessful;
 };
 

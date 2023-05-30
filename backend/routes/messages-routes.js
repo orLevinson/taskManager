@@ -2,23 +2,29 @@ const express = require("express");
 const { check, param } = require("express-validator");
 
 const messagesController = require("../middleware/messages-controller");
+const authController = require("../middleware/auth-controller");
+const globalController = require("../middleware/global-controller");
 
 const router = express.Router();
 
 // only regular users are able to preform the actions from this point forward
-// router.use(checkAuth);
+router.use(authController.getAuth);
 
 // get all messages of a room
 router.get(
   "/:rid",
   [param("rid").not().isEmpty(), param("rid").isString().escape()],
+  authController.checkIfBelongsToRoom,
+  globalController.updateRoom,
   messagesController.getAllMessagesInRoom
 );
 
 // add new message
 router.post(
-  "/",
+  "/:rid",
   [
+    param("rid").not().isEmpty(),
+    param("rid").isString().escape(),
     check("task_name").isString().escape(),
     check("task_name").not().isEmpty(),
     check("user_id").isString().escape(),
@@ -29,13 +35,17 @@ router.post(
     check("dead_line").optional().isDate(),
     check("comment").optional().isString().escape(),
   ],
+  authController.checkIfBelongsToRoom,
+  authController.checkIfProjectInRoom,
   messagesController.addMessage
 );
 
 // change values of existing message by id
 router.patch(
-  "/values/:mid",
+  "/:rid/values/:mid",
   [
+    param("rid").not().isEmpty(),
+    param("rid").isString().escape(),
     param("mid").not().isEmpty(),
     param("mid").isString().escape(),
     check("task_name").isString().escape(),
@@ -48,25 +58,36 @@ router.patch(
     check("dead_line").optional().isDate(),
     check("comment").optional().isString().escape(),
   ],
+  authController.checkIfBelongsToRoom,
+  authController.checkIfProjectInRoom,
   messagesController.changeMessageValuesById
 );
 
 // change status of existing message by id
 router.patch(
-  "/status/:mid",
+  "/:rid/status/:mid",
   [
+    param("rid").not().isEmpty(),
+    param("rid").isString().escape(),
     check("status").escape(),
     check("status").not().isEmpty(),
     param("mid").not().isEmpty(),
     param("mid").isString().escape(),
   ],
+  authController.checkIfBelongsToRoom,
   messagesController.changeMessageStatusById
 );
 
 // delete a message by id
 router.delete(
-  "/:mid",
-  [param("mid").not().isEmpty(), param("mid").isString().escape()],
+  "/:rid/:mid",
+  [
+    param("rid").not().isEmpty(),
+    param("rid").isString().escape(),
+    param("mid").not().isEmpty(),
+    param("mid").isString().escape(),
+  ],
+  authController.checkIfBelongsToRoom,
   messagesController.deleteMessageById
 );
 
