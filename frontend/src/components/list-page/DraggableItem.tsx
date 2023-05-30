@@ -20,7 +20,7 @@ const DraggableItem = ({ item, index }: DraggableProps) => {
   }, [item.deadLine]);
 
   return (
-    <Draggable draggableId={item.id} index={index}>
+    <Draggable draggableId={item.id + ""} index={index}>
       {(provided, snapshot) => (
         <div
           className={styles.draggableItemContainer}

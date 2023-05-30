@@ -7,12 +7,16 @@ import sectorCtx from "../../shared/context/SectorCtx";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
-const ProjectLine = ({ project }: { project: string }) => {
-  const [projectValue, setProjectValue] = useState(project);
+const ProjectLine = ({
+  project,
+}: {
+  project: { project_name: string; project_id: string };
+}) => {
+  const [projectValue, setProjectValue] = useState(project.project_name);
   const { editProject, deleteProject } = useContext(sectorCtx);
 
   useEffect(() => {
-    setProjectValue(project);
+    setProjectValue(project.project_name);
   }, [project, setProjectValue]);
 
   return (
@@ -40,7 +44,7 @@ const ProjectLine = ({ project }: { project: string }) => {
           sx={{ p: "10px" }}
           aria-label="directions"
           onClick={() => {
-            editProject(projectValue, project);
+            editProject(projectValue, project.project_id);
             setProjectValue("");
           }}
         >
@@ -50,7 +54,7 @@ const ProjectLine = ({ project }: { project: string }) => {
           sx={{ p: "10px" }}
           aria-label="directions"
           onClick={() => {
-            deleteProject(projectValue);
+            deleteProject(project.project_id);
           }}
         >
           <DeleteForeverIcon color="error" />

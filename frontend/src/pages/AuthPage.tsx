@@ -1,5 +1,4 @@
 import Login from "../components/auth-page/Login";
-import { baseListStyles } from "../shared/styles/draggableStyles";
 
 const AuthPage = () => {
   return (

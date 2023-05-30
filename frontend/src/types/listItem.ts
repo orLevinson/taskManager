@@ -1,8 +1,10 @@
 type listItem = {
   id: string;
   taskName: string;
-  leader: string;
-  project: string;
+  leader_id: string;
+  leader_name: string;
+  project_name: string;
+  project_id: string;
   otherMembers: string[];
   deadLine?: Date;
   status: number;

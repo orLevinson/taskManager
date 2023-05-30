@@ -9,17 +9,22 @@ const useList = () => {
       switch (action.type) {
         case "add":
           if (
+            action.id !== undefined &&
             action.taskName !== undefined &&
-            action.leader !== undefined &&
-            action.project !== undefined &&
+            action.leader_name !== undefined &&
+            action.leader_id !== undefined &&
+            action.project_name !== undefined &&
+            action.project_id !== undefined &&
             action.otherMembers !== undefined &&
             Array.isArray(action.otherMembers)
           )
             clone[1].unshift({
-              id: new Date().getTime() + Math.random() + "",
+              id: action.id,
               taskName: action.taskName,
-              leader: action.leader,
-              project: action.project,
+              leader_id: action.leader_id,
+              leader_name: action.leader_name,
+              project_id: action.project_id,
+              project_name: action.project_name,
               otherMembers: action.otherMembers,
               status: 1,
               deadLine: action.deadLine,
@@ -44,8 +49,10 @@ const useList = () => {
             action.index !== undefined &&
             action.id !== undefined &&
             action.taskName !== undefined &&
-            action.leader !== undefined &&
-            action.project !== undefined &&
+            action.leader_name !== undefined &&
+            action.leader_id !== undefined &&
+            action.project_name !== undefined &&
+            action.project_id !== undefined &&
             action.otherMembers !== undefined &&
             Array.isArray(action.otherMembers) &&
             action.status !== undefined
@@ -54,8 +61,10 @@ const useList = () => {
               clone[action.status][action.index] = {
                 ...clone[action.status][action.index],
                 taskName: action.taskName,
-                leader: action.leader,
-                project: action.project,
+                leader_id: action.leader_id,
+                leader_name: action.leader_name,
+                project_id: action.project_id,
+                project_name: action.project_name,
                 otherMembers: action.otherMembers,
                 deadLine: action.deadLine,
                 comment: action.comment,

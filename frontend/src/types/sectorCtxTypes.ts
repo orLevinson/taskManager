@@ -1,6 +1,6 @@
 export type sectorCtxType = {
-  people: string[];
-  projects: string[];
+  people: { full_name: string; user_id: string }[];
+  projects: { project_name: string; project_id: string }[];
   setPeople: (people: string[]) => void;
   setProjects: (projects: string[]) => void;
   addProject: (name: string) => void;
@@ -9,8 +9,8 @@ export type sectorCtxType = {
 };
 
 export type sectorStateType = {
-  people: string[];
-  projects: string[];
+  people: { full_name: string; user_id: string }[];
+  projects: { project_name: string; project_id: string }[];
 };
 
 export type sectorActionType = {
@@ -20,8 +20,8 @@ export type sectorActionType = {
     | "addProject"
     | "deleteProject"
     | "editProject";
-  people?: string[];
-  projects?: string[];
+  people?: { full_name: string; user_id: string }[];
+  projects?: { project_name: string; project_id: string }[];
   name?: string;
-  oldName?: string;
+  id?: string;
 };

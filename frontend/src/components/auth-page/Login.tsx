@@ -25,13 +25,13 @@ const Login = () => {
   return (
     <form
       className={styles.container}
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
         if (inLogin) {
-          login(values.username, values.password);
+          await login(values.username, values.password);
           clearValues();
         } else {
-          register(values.username, values.password, values.name);
+          await register(values.username, values.password, values.name);
           setInLogin(true);
           clearValues();
         }

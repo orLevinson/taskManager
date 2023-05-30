@@ -4,7 +4,7 @@ import { sectorActionType, sectorStateType } from "../../types/sectorCtxTypes";
 const useSector = () => {
   const Reducer: Reducer<sectorStateType, sectorActionType> = useCallback(
     (state, action) => {
-      let clone = { ...state };
+      let clone: sectorStateType = { ...state };
       switch (action.type) {
         case "setPeople":
           if (action.people && Array.isArray(action.people)) {
@@ -17,29 +17,27 @@ const useSector = () => {
           }
           break;
         case "editProject":
-          if (
-            action.name &&
-            action.oldName &&
-            action.oldName.length > 0 &&
-            action.name.length > 0
-          ) {
+          if (action.name && action.id && action.name.length > 0) {
             clone.projects = clone.projects.map((project) => {
-              if (project === action.oldName && action.name) {
-                return action.name;
+              if (project.project_id === action.id && action.name) {
+                return { ...project, project_name: action.name };
               }
               return project;
             });
           }
           break;
         case "addProject":
-          if (action.name && action.name.length > 0) {
-            clone.projects.push(action.name);
+          if (action.id && action.name && action.name.length > 0) {
+            clone.projects.push({
+              project_name: action.name,
+              project_id: action.id,
+            });
           }
           break;
         case "deleteProject":
-          if (action.name && action.name.length > 0) {
+          if (action.id) {
             clone.projects = clone.projects.filter(
-              (project) => project !== action.name
+              (project) => project.project_id !== action.id
             );
           }
           break;

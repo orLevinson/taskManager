@@ -42,8 +42,8 @@ const Filters = ({
             <MenuItem value=""></MenuItem>
             {people.map((person, index) => {
               return (
-                <MenuItem key={index} value={person}>
-                  {person}
+                <MenuItem key={index} value={person.user_id}>
+                  {person.full_name}
                 </MenuItem>
               );
             })}
@@ -65,8 +65,8 @@ const Filters = ({
             <MenuItem value=""></MenuItem>
             {projects.map((project, index) => {
               return (
-                <MenuItem key={index} value={project}>
-                  {project}
+                <MenuItem key={index} value={project.project_id}>
+                  {project.project_name}
                 </MenuItem>
               );
             })}

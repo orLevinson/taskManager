@@ -38,7 +38,7 @@ const DraggableContent = ({ item }: { item: listItem }) => {
       >
         <div>
           <h3 style={{ margin: 0 }}>{item.taskName}</h3>
-          <h4 style={{ margin: 0 }}>{item.project}</h4>
+          <h4 style={{ margin: 0 }}>{item.project_name}</h4>
         </div>
         <div style={{ marginTop: 3 }}>{date}</div>
       </div>
@@ -57,7 +57,7 @@ const DraggableContent = ({ item }: { item: listItem }) => {
           }}
         >
           <Chip
-            label={item.leader}
+            label={item.leader_name}
             sx={{
               background: "#f58453",
               "& .MuiChip-label": {
@@ -66,9 +66,10 @@ const DraggableContent = ({ item }: { item: listItem }) => {
             }}
             size="small"
           />
-          {item.otherMembers.map((member) => {
+          {item.otherMembers.map((member, index) => {
             return (
               <Chip
+                key={index}
                 label={member}
                 sx={{
                   background: "#fc429f",

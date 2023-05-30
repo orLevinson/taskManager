@@ -2,10 +2,10 @@ import { createContext } from "react";
 import { UserCtxType } from "../../types/UserTypes";
 
 const userCtx = createContext<UserCtxType>({
-  login: (username, password) => {
+  login: async (username, password) => {
     return false;
   },
-  register: (username, password, name) => {
+  register: async (username, password, name) => {
     return false;
   },
   logout: () => {},

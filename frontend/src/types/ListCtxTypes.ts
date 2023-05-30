@@ -2,8 +2,10 @@ import listItem from "./listItem";
 
 export type addItemProperties = {
   taskName: string;
-  leader: string;
-  project: string;
+  leader_id: string;
+  project_id: string;
+  leader_name: string;
+  project_name: string;
   otherMembers: string[];
   deadLine?: Date | undefined;
   comment?: string | undefined;
@@ -11,8 +13,8 @@ export type addItemProperties = {
 
 export type addItemType = (
   taskName: string,
-  leader: string,
-  project: string,
+  leader_id: string,
+  project_id: string,
   otherMembers: string[],
   deadLine?: Date | undefined,
   comment?: string | undefined
@@ -22,8 +24,8 @@ export type editItemType = (
   index: number,
   id: string,
   taskName: string,
-  leader: string,
-  project: string,
+  leader_id: string,
+  project_id: string,
   otherMembers: string[],
   status: number,
   deadLine?: Date | undefined,
@@ -58,8 +60,10 @@ export type listReducerType = {
   index?: number;
   id?: string;
   taskName?: string;
-  leader?: string;
-  project?: string;
+  leader_id?: string;
+  leader_name?: string;
+  project_name?: string;
+  project_id?: string;
   otherMembers?: string[];
   status?: number;
   deadLine?: Date | undefined;

@@ -1,31 +1,9 @@
-import { useContext } from "react";
 import { DraggingStyle, NotDraggingStyle } from "react-beautiful-dnd";
 import droppableId from "../../types/droppableId";
 import listItem from "../../types/listItem";
-import sectorCtx from "../context/SectorCtx";
 import { baseListStyles } from "../styles/draggableStyles";
 
 const useDraggables = () => {
-  const { people, projects } = useContext(sectorCtx);
-
-  const getItems: (
-    index: number,
-    count: number,
-    offset?: number
-  ) => listItem[] = (index, count, offset = 0) => {
-    return Array.from({ length: count }, (v, k) => k).map((k) => ({
-      id: `item-${k + offset}-${new Date().getTime()}`,
-      taskName: `משימה ${k + offset}`,
-      leader: people[Math.floor(Math.random() * people.length)],
-      project: projects[Math.floor(Math.random() * projects.length)],
-      otherMembers: people.filter((i) => {
-        return i && Math.random() > 0.5;
-      }),
-      deadLine: Math.random() > 0.5 ? new Date() : undefined,
-      status: index,
-      comment: Math.random() > 0.5 ? "הערות הערות" : undefined,
-    }));
-  };
   const reorder = (list: listItem[], startIndex: number, endIndex: number) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
@@ -92,7 +70,6 @@ const useDraggables = () => {
   });
 
   return {
-    getItems,
     reorder,
     move,
     getItemStyle,

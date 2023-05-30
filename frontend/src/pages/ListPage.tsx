@@ -21,14 +21,14 @@ function ListPage() {
     if (filters.leader && filters.leader !== "") {
       clone = clone.map((list) => {
         return list.filter((item) => {
-          return item.leader === filters.leader;
+          return item.leader_id === filters.leader;
         });
       });
     }
     if (filters.project && filters.project !== "") {
       clone = clone.map((list) => {
         return list.filter((item) => {
-          return item.project === filters.project;
+          return item.project_id === filters.project;
         });
       });
     }
@@ -52,12 +52,10 @@ function ListPage() {
         });
       });
     }
-    console.log(clone, filters.leader);
     return clone;
   }, [data, filters]);
 
   function onDragEnd(result: any) {
-    console.log(result);
     const { source, destination, draggableId } = result;
 
     // dropped outside the list

@@ -21,8 +21,7 @@ const ProjectsManager = ({
   inEdit: boolean;
   setInEdit: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { projects, addProject } =
-    useContext(sectorCtx);
+  const { projects, addProject } = useContext(sectorCtx);
 
   const [newProject, setNewProject] = useState("");
 
@@ -34,6 +33,7 @@ const ProjectsManager = ({
         "& .MuiPaper-root": {
           width: "100%",
         },
+        zIndex: 999,
       }}
     >
       <DialogTitle>
@@ -64,8 +64,8 @@ const ProjectsManager = ({
               color="primary"
               sx={{ p: "10px" }}
               aria-label="directions"
-              onClick={() => {
-                addProject(newProject);
+              onClick={async () => {
+                await addProject(newProject);
                 setNewProject("");
               }}
             >
@@ -73,11 +73,9 @@ const ProjectsManager = ({
             </IconButton>
           </Paper>
         </div>
-        {
-            projects.map((project,index)=>{
-                return <ProjectLine key={index} project={project} />
-            })
-        }
+        {projects.map((project, index) => {
+          return <ProjectLine key={index} project={project} />;
+        })}
       </DialogContent>
       <DialogActions>
         <Button

@@ -26,8 +26,10 @@ const AddDraggable = ({
   const { people, projects } = useContext(sectorCtx);
   const [data, setData] = useState<addItemProperties>({
     taskName: "",
-    leader: "",
-    project: "",
+    leader_id: "",
+    leader_name: "",
+    project_name: "",
+    project_id: "",
     otherMembers: [],
   });
   const [isOpen, setIsOpen] = useState(false);
@@ -109,22 +111,54 @@ const AddDraggable = ({
           }}
         />
         <Autocomplete
-          value={data.project}
+          value={{
+            project_id: data.project_id,
+            project_name: data.project_name,
+          }}
           onChange={(event, newValue) => {
-            setData((prev) => ({ ...prev, project: newValue ? newValue : "" }));
+            setData((prev) => ({
+              ...prev,
+              project_id:
+                newValue && typeof newValue === "object"
+                  ? newValue.project_id
+                  : "",
+              project_name:
+                newValue && typeof newValue === "object"
+                  ? newValue.project_name
+                  : "",
+            }));
           }}
           options={projects}
+          getOptionLabel={(option) =>
+            typeof option === "object" ? option.project_name : ""
+          }
           renderInput={(params) => (
             <TextField {...params} variant="standard" label="תחום" />
           )}
           freeSolo
         />
         <Autocomplete
-          value={data.leader}
+          value={{
+            full_name: data.leader_name,
+            user_id: data.leader_id,
+          }}
           onChange={(event, newValue) => {
-            setData((prev) => ({ ...prev, leader: newValue ? newValue : "" }));
+            setData((prev) => ({
+              ...prev,
+              leader_id:
+                newValue && typeof newValue === "object"
+                  ? newValue.user_id
+                  : "",
+              leader_name:
+                newValue && typeof newValue === "object"
+                  ? newValue.full_name
+                  : "asdf",
+            }));
           }}
           options={people}
+          getOptionLabel={(option) =>
+            typeof option === "object" ? option.full_name : ""
+          }
           renderInput={(params) => (
             <TextField {...params} variant="standard" label="מוביל \ אחראי" />
           )}
@@ -149,7 +183,7 @@ const AddDraggable = ({
               }));
             }
           }}
-          options={people}
+          options={people.map((person) => person.full_name)}
           renderInput={(params) => (
             <TextField {...params} variant="standard" label="משתתפים נוספים" />
           )}
@@ -202,8 +236,8 @@ const AddDraggable = ({
           onClick={() => {
             addItem(
               data.taskName,
-              data.leader,
-              data.project,
+              data.leader_id,
+              data.project_id,
               data.otherMembers,
               data.deadLine,
               data.comment
@@ -211,7 +245,7 @@ const AddDraggable = ({
             setInEdit(false);
           }}
         >
-          ערוך
+          הוסף
         </Button>
       </DialogActions>
     </Dialog>

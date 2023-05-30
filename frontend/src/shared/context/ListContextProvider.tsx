@@ -1,90 +1,273 @@
-import { ReactNode, useReducer } from "react";
+import { ReactNode, useContext, useEffect, useReducer } from "react";
 import {
   addItemType,
   deleteItemType,
   editItemType,
   setItemStatusType,
 } from "../../types/ListCtxTypes";
-import listItem from "../../types/listItem";
-import useDraggables from "../hooks/useDraggables";
+import useHttp from "../hooks/useHttp";
 import useList from "../hooks/useList";
 import listCtx from "./ListCtx";
+import loadingCtx from "./loadingCtx";
+import sectorCtx from "./SectorCtx";
+import userCtx from "./UserCtx";
 
 const ListContextProvider = ({ children }: { children: ReactNode }) => {
-  const { getItems } = useDraggables();
+  const { token, room_id } = useContext(userCtx);
+  const { projects } = useContext(sectorCtx);
+  const { setLoading, setError } = useContext(loadingCtx);
+  const { httpHandler } = useHttp();
   const { listReducer } = useList();
-  const [state, dispatch] = useReducer(listReducer, [
-    getItems(0, 10, 0),
-    getItems(1, 5, 10),
-    getItems(2, 5, 15),
-  ]);
+  const [state, dispatch] = useReducer(listReducer, [[], [], []]);
 
-  const addItem: addItemType = (
+  const addItem: addItemType = async (
     taskName,
-    leader,
-    project,
+    leader_id,
+    project_id,
     otherMembers,
     deadLine,
     comment
   ) => {
-    dispatch({
-      type: "add",
-      taskName,
-      leader,
-      project,
-      otherMembers,
-      deadLine,
-      comment,
-    });
+    if (!token || !room_id) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    const response = await httpHandler(
+      `${import.meta.env.VITE_BACKEND_URL}/api/messages/${room_id}`,
+      "POST",
+      {
+        task_name: taskName,
+        user_id: leader_id + "",
+        project_id: project_id + "",
+        other_members: otherMembers,
+        dead_line: deadLine,
+        comment,
+      },
+      {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      }
+    );
+
+    if (response && !response.error && response.data) {
+      dispatch({
+        type: "add",
+        id: response.data.added_message[0].message_id,
+        taskName,
+        leader_id,
+        project_id,
+        leader_name: response.data.added_message[0].full_name,
+        project_name: response.data.added_message[0].project_name,
+        otherMembers,
+        deadLine,
+        comment,
+      });
+
+      setLoading(false);
+
+      return true;
+    } else {
+      if (response && response.error) {
+        setError(response.error);
+        setLoading(false);
+        return false;
+      }
+    }
   };
 
-  const editItem: editItemType = (
+  const editItem: editItemType = async (
     index,
     id,
     taskName,
-    leader,
-    project,
+    leader_id,
+    project_id,
     otherMembers,
     status,
     deadLine,
     comment
   ) => {
-    dispatch({
-      type: "edit",
-      index,
-      id,
-      taskName,
-      leader,
-      project,
-      otherMembers,
-      deadLine,
-      comment,
-      status,
-    });
+    if (!token || !room_id) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    const response = await httpHandler(
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/api/messages/${room_id}/values/${id}`,
+      "PATCH",
+      {
+        task_name: taskName,
+        user_id: leader_id + "",
+        project_id: project_id + "",
+        other_members: otherMembers,
+        dead_line: deadLine,
+        comment,
+      },
+      {
+        "Content-Type": "application/json",
+        Authorization: `bearer ${token}`,
+      }
+    );
+
+    if (response && !response.error && response.data) {
+      dispatch({
+        type: "edit",
+        index,
+        id,
+        taskName,
+        leader_id,
+        leader_name: response.data.changed_message.full_name,
+        project_name: response.data.changed_message.project_name,
+        project_id,
+        otherMembers,
+        deadLine,
+        comment,
+        status,
+      });
+
+      setLoading(false);
+
+      return true;
+    } else {
+      if (response && response.error) {
+        setError(response.error);
+        setLoading(false);
+        return false;
+      }
+    }
   };
 
-  const deleteItem: deleteItemType = (index, id, status) => {
-    dispatch({
-      type: "delete",
-      index,
-      id,
-      status,
-    });
+  const deleteItem: deleteItemType = async (index, id, status) => {
+    if (!token || !room_id) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    const response = await httpHandler(
+      `${import.meta.env.VITE_BACKEND_URL}/api/messages/${room_id}/${id}`,
+      "DELETE",
+      undefined,
+      {
+        Authorization: `bearer ${token}`,
+      }
+    );
+
+    if (response && !response.error && response.data) {
+      dispatch({
+        type: "delete",
+        index,
+        id,
+        status,
+      });
+
+      setLoading(false);
+
+      return true;
+    } else {
+      if (response && response.error) {
+        setError(response.error);
+        setLoading(false);
+        return false;
+      }
+    }
   };
 
-  const setItemStatus: setItemStatusType = (data, index, id, status) => {
-    dispatch({
-      type: "setStatus",
-      data,
-      index,
-      id,
-      status,
-    });
+  const setItemStatus: setItemStatusType = async (data, index, id, status) => {
+    if (!token || !room_id) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    const response = await httpHandler(
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/api/messages/${room_id}/status/${id}`,
+      "PATCH",
+      {
+        status,
+      },
+      {
+        Authorization: `bearer ${token}`,
+      }
+    );
+
+    if (response && !response.error && response.data) {
+      dispatch({
+        type: "setStatus",
+        data,
+        index,
+        id,
+        status,
+      });
+
+      setLoading(false);
+
+      return true;
+    } else {
+      if (response && response.error) {
+        setError(response.error);
+        setLoading(false);
+        return false;
+      }
+    }
   };
 
-  const setState: (data: listItem[][]) => void = (data) => {
-    dispatch({ type: "setState", data });
+  const setState: () => void = async () => {
+    if (!token || !room_id) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    const response = await httpHandler(
+      `${import.meta.env.VITE_BACKEND_URL}/api/messages/${room_id}`,
+      "GET",
+      undefined,
+      {
+        Authorization: `bearer ${token}`,
+      }
+    );
+
+    if (response && !response.error && response.data) {
+      dispatch({
+        type: "setState",
+        data: response.data.messages.map((list: any) => {
+          return list.map((item: any) => ({
+            id: item.message_id,
+            taskName: item.task_name,
+            leader_id: item.user_id,
+            leader_name: item.full_name,
+            project_name: item.project_name,
+            project_id: item.project_id,
+            otherMembers: item.other_members,
+            deadLine: item.dead_line ? new Date(item.dead_line) : undefined,
+            status: item.status,
+            comment: item.comment,
+          }));
+        }),
+      });
+
+      setLoading(false);
+
+      return true;
+    } else {
+      if (response && response.error) {
+        setError(response.error);
+        setLoading(false);
+        return false;
+      }
+    }
   };
+
+  useEffect(() => {
+    setState();
+  }, [projects]);
 
   return (
     <listCtx.Provider
