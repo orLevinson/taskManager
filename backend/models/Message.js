@@ -10,11 +10,16 @@ class Message {
     let result = [];
     try {
       const { rows } = await db.query(
-        `SELECT *
+        `SELECT messages.*,users.full_name,projects.project_name
          FROM messages 
-         WHERE project_id 
+        LEFT JOIN users 
+        ON users.user_id=messages.user_id
+        LEFT JOIN projects 
+        ON projects.project_id=messages.project_id
+        WHERE messages.project_id 
          IN (SELECT project_id 
-        FROM projects WHERE room_id=$1)`,
+        FROM projects WHERE room_id=$1)
+        `,
         [room_id]
       );
       result = rows;
@@ -35,9 +40,17 @@ class Message {
     let result = [];
     try {
       const { rows } = await db.query(
-        `INSERT INTO messages(task_name, user_id, project_id, other_members, dead_line, comment,status)
-        VALUES ($1,$2,$3,$4,$5,$6,1) 
-        RETURNING *`,
+        `WITH added_message AS (
+          INSERT INTO messages (task_name, user_id, project_id, other_members, dead_line, comment, status)
+          VALUES ($1, $2, $3, $4, $5, $6, 1)
+          RETURNING *
+        )
+        SELECT added_message.*, users.full_name, projects.project_name
+        FROM added_message
+        LEFT JOIN users ON users.user_id = added_message.user_id
+        LEFT JOIN projects ON projects.project_id = added_message.project_id;
+        
+        `,
         [task_name, user_id, project_id, other_members, dead_line, comment]
       );
       result = rows;
@@ -59,9 +72,16 @@ class Message {
     let result = [];
     try {
       const { rows } = await db.query(
-        `UPDATE messages SET task_name=$1, user_id=$2, project_id=$3, other_members=$4, dead_line=$5, comment=$6 
+        ` 
+         WITH updated_message AS (
+          UPDATE messages SET task_name=$1, user_id=$2, project_id=$3, other_members=$4, dead_line=$5, comment=$6 
          WHERE message_id=$7
-         RETURNING *`,
+         RETURNING *
+        )
+        SELECT updated_message.*, users.full_name, projects.project_name
+        FROM updated_message
+        LEFT JOIN users ON users.user_id = updated_message.user_id
+        LEFT JOIN projects ON projects.project_id = updated_message.project_id;`,
         [
           task_name,
           user_id,

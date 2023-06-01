@@ -10,7 +10,7 @@ class Project {
     let result = [];
     try {
       const { rows } = await db.query(
-        "SELECT * FROM projects WHERE room_id=$1",
+        "SELECT project_id,project_name FROM projects WHERE room_id=$1",
         [room_id]
       );
       result = rows;

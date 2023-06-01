@@ -40,6 +40,19 @@ class dbSchema {
       );
       `);
 
+      const { rows: existingRooms } = await db.query(`SELECT * FROM rooms`);
+
+      if (existingRooms.length === 0) {
+        console.log("no room exists - creating one now");
+        await db.query(
+          `INSERT INTO rooms(room_name) VALUES (${
+            process.env.DEFAULT_ROOM_NAME
+              ? process.env.DEFAULT_ROOM_NAME
+              : "new_room"
+          })`
+        );
+      }
+
       await db.query(`COMMIT`);
     } catch (error) {
       await db.query(`ROLLBACK`);

@@ -14,6 +14,7 @@ router.post(
   [
     check("username").isString().escape(),
     check("username").not().isEmpty(),
+    check("username").isLength({ min: 6 }),
     check("password").isString().escape(),
     check("password").not().isEmpty(),
     check("password").isLength({ min: 6 }),
@@ -27,6 +28,7 @@ router.post(
   [
     check("username").isString().escape(),
     check("username").not().isEmpty(),
+    check("username").isLength({ min: 6 }),
     check("password").isString().escape(),
     check("password").not().isEmpty(),
     check("password").isLength({ min: 6 }),
@@ -38,6 +40,9 @@ router.post(
 router.use(authController.getAuth);
 
 // only regular users
+// get all users in the room
+router.get("/inroom", usersController.getAllUsersInRoom);
+
 // check token validity
 router.get("/check", usersController.checkToken);
 

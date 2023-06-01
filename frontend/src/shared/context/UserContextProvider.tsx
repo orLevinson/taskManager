@@ -47,7 +47,7 @@ const UserContextProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("token", response.data.userData.token);
         localStorage.setItem("expiration", "" + expirationTime);
 
-        const room_id = response.data.userData.room_id;
+        const { room_id, is_admin } = response.data.userData;
 
         setLoading(false);
 
@@ -55,7 +55,11 @@ const UserContextProvider = ({ children }: { children: ReactNode }) => {
         if (room_id) {
           navigate("/");
         } else {
-          setError("הינך רשומ/ה למערכת אך יש להמתין לאישור מנהל");
+          if (!is_admin) {
+            setError("הינך רשומ/ה למערכת אך יש להמתין לאישור מנהל");
+          } else {
+            navigate("/admin");
+          }
         }
 
         return true;
@@ -170,7 +174,11 @@ const UserContextProvider = ({ children }: { children: ReactNode }) => {
         navigate("/");
       } else {
         navigate("/auth");
-        setError("הינך רשומ/ה למערכת אך יש להמתין לאישור מנהל");
+        if (!result.is_admin) {
+          setError("הינך רשומ/ה למערכת אך יש להמתין לאישור מנהל");
+        } else {
+          navigate("/admin");
+        }
       }
 
       setTimeout(() => {

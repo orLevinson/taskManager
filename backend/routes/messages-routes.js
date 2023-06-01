@@ -32,7 +32,14 @@ router.post(
     check("project_id").isString().escape(),
     check("project_id").not().isEmpty(),
     check("other_members.*").isString().escape(),
-    check("dead_line").optional().isDate(),
+    check("dead_line")
+      .optional()
+      .custom((value) => {
+        if (isNaN(new Date(value))) {
+          throw new Error("Invalid date format");
+        }
+        return true;
+      }),
     check("comment").optional().isString().escape(),
   ],
   authController.checkIfBelongsToRoom,
@@ -55,7 +62,14 @@ router.patch(
     check("project_id").isString().escape(),
     check("project_id").not().isEmpty(),
     check("other_members.*").isString().escape(),
-    check("dead_line").optional().isDate(),
+    check("dead_line")
+      .optional()
+      .custom((value) => {
+        if (isNaN(new Date(value))) {
+          throw new Error("Invalid date format");
+        }
+        return true;
+      }),
     check("comment").optional().isString().escape(),
   ],
   authController.checkIfBelongsToRoom,

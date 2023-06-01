@@ -166,13 +166,28 @@ const checkToken = async (req, res, next) => {
 
   if (user && Array.isArray(user) && user.length === 1) {
     res.json({
-      success,
+      success: true,
       userData: {
         room_id: user[0].room_id,
         room_name: user[0].room_name,
         is_admin: user[0].is_admin,
         name: user[0].full_name,
       },
+    });
+  }
+};
+
+const getAllUsersInRoom = async (req, res, next) => {
+  const { roomId } = req.userData;
+
+  const UsersController = new User(next);
+
+  const users = await UsersController.getAllInRoom(roomId);
+
+  if (users) {
+    res.json({
+      success: true,
+      users,
     });
   }
 };
@@ -273,6 +288,7 @@ const deleteUserById = async (req, res, next) => {
 exports.register = register;
 exports.login = login;
 exports.checkToken = checkToken;
+exports.getAllUsersInRoom = getAllUsersInRoom;
 exports.getAllUsers = getAllUsers;
 exports.changeUserRoomById = changeUserRoomById;
 exports.changeUserPrivilegeById = changeUserPrivilegeById;

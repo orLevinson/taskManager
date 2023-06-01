@@ -61,8 +61,8 @@ class Room {
       );
       await db.query(
         `
-        DELETE FROM users
-        WHERE room_id = $1;`,
+        UPDATE users
+        SET room_id=NULL WHERE room_id = $1;`,
         [room_id]
       );
       await db.query(

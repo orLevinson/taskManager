@@ -6,6 +6,22 @@ class User {
     this.errFunction = errFunction;
   }
 
+  async getAllInRoom(room_id) {
+    let result = [];
+    try {
+      const { rows } = await db.query(
+        `SELECT full_name,user_id 
+         FROM users
+         WHERE room_id=$1`,
+        [room_id]
+      );
+      result = rows;
+    } catch (error) {
+      return this.errFunction(new HttpError("couldn't fetch users", 500));
+    }
+    return result;
+  }
+
   async getAll() {
     let result = [];
     try {
@@ -97,7 +113,9 @@ class User {
       );
       result = rows;
     } catch (error) {
-      return this.errFunction(new HttpError("couldn't change user's room", 500));
+      return this.errFunction(
+        new HttpError("couldn't change user's room", 500)
+      );
     }
     return result;
   }
@@ -113,7 +131,9 @@ class User {
       );
       result = rows;
     } catch (error) {
-      return this.errFunction(new HttpError("couldn't change user's privilege", 500));
+      return this.errFunction(
+        new HttpError("couldn't change user's privilege", 500)
+      );
     }
     return result;
   }
@@ -131,7 +151,7 @@ class User {
       const { rows } = await db.query(
         `
       DELETE FROM Users
-      WHERE user_id = $1;`,
+      WHERE user_id = $1 RETURNING *;`,
         [user_id]
       );
       await db.query(`COMMIT`);
