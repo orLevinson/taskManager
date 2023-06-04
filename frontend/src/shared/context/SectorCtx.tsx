@@ -4,11 +4,11 @@ import { sectorCtxType } from "../../types/sectorCtxTypes";
 const sectorCtx = createContext<sectorCtxType>({
   people: [],
   projects: [],
-  setPeople: (people) => {},
-  setProjects: (projects) => {},
-  addProject: (name) => {},
-  editProject: (name, oldName) => {},
-  deleteProject: (name) => {},
+  setPeople: (_people) => {},
+  setProjects: (_projects) => {},
+  addProject: (_name) => {},
+  editProject: (_name, _oldName) => {},
+  deleteProject: (_name) => {},
 });
 
 export default sectorCtx;

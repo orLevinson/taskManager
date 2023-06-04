@@ -7,9 +7,9 @@ const loadingCtx = createContext<{
   setError: (error: string | null) => void;
 }>({
   loading: false,
-  setLoading: (state) => {},
+  setLoading: (_state) => {},
   error: null,
-  setError: (error) => {},
+  setError: (_error) => {},
 });
 
 export default loadingCtx;

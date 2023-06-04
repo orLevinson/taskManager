@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import useDraggables from "../../shared/hooks/useDraggables";
 import DraggableProps from "../../types/DraggableProps";

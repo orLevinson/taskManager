@@ -112,7 +112,7 @@ const EditDraggable = ({
             project_id: data.project_id,
             project_name: data.project_name,
           }}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             setData((prev) => ({
               ...prev,
               project_id:
@@ -139,7 +139,7 @@ const EditDraggable = ({
             full_name: data.leader_name,
             user_id: data.leader_id,
           }}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             setData((prev) => ({
               ...prev,
               leader_id:
@@ -170,7 +170,7 @@ const EditDraggable = ({
             },
           }}
           value={data.otherMembers}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             if (typeof newValue === "string") {
               setData((prev) => ({ ...prev, otherMembers: [newValue] }));
             } else {

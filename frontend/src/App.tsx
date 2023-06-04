@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
-import AdminPage from "./pages/AdminPage";
-import AuthPage from "./pages/AuthPage";
-import ListPage from "./pages/ListPage";
+import loadable from "@loadable/component";
+const ListPage = loadable(() => import("./pages/ListPage"));
+const AdminPage = loadable(() => import("./pages/AdminPage"));
+const AuthPage = loadable(() => import("./pages/AuthPage"));
 import userCtx from "./shared/context/UserCtx";
 import LoadingOverlay from "./shared/UIElements/LoadingOverlay";
 import Navbar from "./shared/UIElements/Navbar";

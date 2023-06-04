@@ -28,7 +28,7 @@ const AutoCompletePicker = ({
         room_id: currentValue.room_id ? currentValue.room_id : "",
         room_name: currentValue.room_name ? currentValue.room_name : "אין",
       }}
-      onChange={(event, newValue) => {
+      onChange={(_event, newValue) => {
         if (
           newValue &&
           typeof newValue === "object" &&
