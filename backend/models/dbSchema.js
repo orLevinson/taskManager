@@ -33,9 +33,11 @@ class dbSchema {
         task_name VARCHAR NOT NULL,
         user_id INTEGER REFERENCES Users(user_id),
         project_id INTEGER REFERENCES Projects(project_id),
+        sub_project VARCHAR NOT NULL DEFAULT '',
         status INTEGER CHECK (status IN (0, 1, 2)),
         other_members VARCHAR[],
         dead_line DATE,
+        finished_date DATE,
         comment VARCHAR
       );
       `);

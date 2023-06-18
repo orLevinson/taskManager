@@ -5,7 +5,7 @@ import { listReducerType } from "../../types/ListCtxTypes";
 const useList = () => {
   const listReducer: Reducer<listItem[][], listReducerType> = useCallback(
     (state, action) => {
-      let clone: listItem[][] = [...state];
+      let clone: listItem[][] = structuredClone(state);
       switch (action.type) {
         case "add":
           if (
@@ -15,6 +15,7 @@ const useList = () => {
             action.leader_id !== undefined &&
             action.project_name !== undefined &&
             action.project_id !== undefined &&
+            action.sub_project !== undefined &&
             action.otherMembers !== undefined &&
             Array.isArray(action.otherMembers)
           )
@@ -24,11 +25,13 @@ const useList = () => {
               leader_id: action.leader_id,
               leader_name: action.leader_name,
               project_id: action.project_id,
+              sub_project: action.sub_project,
               project_name: action.project_name,
               otherMembers: action.otherMembers,
               status: 1,
               deadLine: action.deadLine,
               comment: action.comment,
+              giver: action.giver,
             });
           return clone;
           break;
@@ -53,6 +56,7 @@ const useList = () => {
             action.leader_id !== undefined &&
             action.project_name !== undefined &&
             action.project_id !== undefined &&
+            action.sub_project !== undefined &&
             action.otherMembers !== undefined &&
             Array.isArray(action.otherMembers) &&
             action.status !== undefined
@@ -64,10 +68,16 @@ const useList = () => {
                 leader_id: action.leader_id,
                 leader_name: action.leader_name,
                 project_id: action.project_id,
+                sub_project: action.sub_project,
                 project_name: action.project_name,
                 otherMembers: action.otherMembers,
+                finished_date:
+                  clone[action.status][action.index].status === 2
+                    ? action.finished_date
+                    : undefined,
                 deadLine: action.deadLine,
                 comment: action.comment,
+                giver: action.giver,
               };
             }
           }
@@ -88,6 +98,8 @@ const useList = () => {
             ) {
               clone = action.data;
               clone[action.status][action.index].status = action.status;
+              clone[action.status][action.index].finished_date =
+                action.status === 2 ? new Date() : undefined;
             }
           }
           return clone;

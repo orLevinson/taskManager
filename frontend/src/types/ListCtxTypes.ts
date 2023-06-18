@@ -4,20 +4,25 @@ export type addItemProperties = {
   taskName: string;
   leader_id: string;
   project_id: string;
+  sub_project: string;
   leader_name: string;
   project_name: string;
+  giver?: string;
   otherMembers: string[];
   deadLine?: Date | undefined;
   comment?: string | undefined;
+  finished_date?: Date | undefined;
 };
 
 export type addItemType = (
   taskName: string,
   leader_id: string,
   project_id: string,
+  sub_project: string,
   otherMembers: string[],
   deadLine?: Date | undefined,
-  comment?: string | undefined
+  comment?: string | undefined,
+  giver?: string
 ) => void;
 
 export type editItemType = (
@@ -26,10 +31,13 @@ export type editItemType = (
   taskName: string,
   leader_id: string,
   project_id: string,
+  sub_project: string,
   otherMembers: string[],
   status: number,
   deadLine?: Date | undefined,
-  comment?: string | undefined
+  comment?: string | undefined,
+  giver?: string,
+  finished_date?: Date | undefined
 ) => void;
 
 export type setItemStatusType = (
@@ -64,9 +72,12 @@ export type listReducerType = {
   leader_name?: string;
   project_name?: string;
   project_id?: string;
+  sub_project?: string;
+  giver?: string;
   otherMembers?: string[];
   status?: number;
   deadLine?: Date | undefined;
   comment?: string | undefined;
   data?: listItem[][];
+  finished_date?: Date | undefined;
 };

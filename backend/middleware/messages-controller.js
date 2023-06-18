@@ -39,14 +39,24 @@ const addMessage = async (req, res, next) => {
       new HttpError("Invalid inputs passed, please check your data.", 422)
     );
   }
-  const { task_name, user_id, project_id, other_members, dead_line, comment } =
-    req.body;
+  const {
+    task_name,
+    user_id,
+    project_id,
+    sub_project,
+    giver,
+    other_members,
+    dead_line,
+    comment,
+  } = req.body;
   const MessagesController = new Message(next);
 
   const addedMessage = await MessagesController.addMessage(
     task_name,
     user_id,
     project_id,
+    sub_project,
+    giver,
     other_members,
     dead_line,
     comment
@@ -68,8 +78,17 @@ const changeMessageValuesById = async (req, res, next) => {
   }
 
   const messageId = req.params.mid;
-  const { task_name, user_id, project_id, other_members, dead_line, comment } =
-    req.body;
+  const {
+    task_name,
+    user_id,
+    project_id,
+    sub_project,
+    giver,
+    other_members,
+    dead_line,
+    comment,
+    finished_date,
+  } = req.body;
   const MessagesController = new Message(next);
 
   const changedMessage = await MessagesController.changeValuesById(
@@ -77,8 +96,11 @@ const changeMessageValuesById = async (req, res, next) => {
     task_name,
     user_id,
     project_id,
+    sub_project,
+    giver,
     other_members,
     dead_line,
+    finished_date,
     comment
   );
 

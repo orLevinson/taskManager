@@ -12,6 +12,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./listPage.css";
 import listCtx from "../../shared/context/ListCtx";
 import sectorCtx from "../../shared/context/SectorCtx";
+import HTMLDecode from "../../shared/HelperFunctions/HTMLDecode";
 
 const filter = createFilterOptions<string>();
 
@@ -29,7 +30,10 @@ const EditDraggable = ({
   const { editItem } = useContext(listCtx);
   const { people, projects } = useContext(sectorCtx);
   const [data, setData] = useState(item);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState({
+    dead_line: false,
+    finished_date: false,
+  });
 
   return (
     <Dialog
@@ -42,14 +46,17 @@ const EditDraggable = ({
       }}
     >
       <DialogTitle>
-        <div>ערוך את {item.taskName}</div>
+        <div>ערוך את {HTMLDecode(item.taskName)}</div>
       </DialogTitle>
       <DialogContent>
         <div className="datePicker-container">
           <Button
             variant="outlined"
             onClick={() => {
-              setIsOpen(!isOpen);
+              setIsOpen((prev) => ({
+                finished_date: false,
+                dead_line: !prev.dead_line,
+              }));
             }}
           >
             תג"ב -{" "}
@@ -74,7 +81,7 @@ const EditDraggable = ({
               מחק תג"ב
             </Button>
           )}
-          {isOpen && (
+          {isOpen.dead_line && (
             <DatePicker
               strictParsing
               selected={data.deadLine ? data.deadLine : null}
@@ -82,13 +89,68 @@ const EditDraggable = ({
                 setData((prev) => {
                   return { ...prev, deadLine: date ? date : prev.deadLine };
                 });
-                setIsOpen(false);
+                setIsOpen((prev) => ({ ...prev, dead_line: false }));
               }}
               shouldCloseOnSelect={true}
               inline
             />
           )}
         </div>
+        {data.status === 2 && (
+          <>
+            <br />
+            <div className="datePicker-container">
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setIsOpen((prev) => ({
+                    dead_line: false,
+                    finished_date: !prev.finished_date,
+                  }));
+                }}
+              >
+                תאריך ביצוע -{" "}
+                {data.finished_date
+                  ? `${data.finished_date.getFullYear()} / ${
+                      data.finished_date.getMonth() + 1
+                    } / ${data.finished_date.getDate()}`
+                  : "אין"}
+              </Button>
+              {data.finished_date && (
+                <Button
+                  size={"large"}
+                  sx={{ mr: 1 }}
+                  variant="outlined"
+                  onClick={() => {
+                    setData((prev) => {
+                      return { ...prev, finished_date: undefined };
+                    });
+                  }}
+                  color={"error"}
+                >
+                  מחק תאריך ביצוע
+                </Button>
+              )}
+              {isOpen.finished_date && (
+                <DatePicker
+                  strictParsing
+                  selected={data.finished_date ? data.finished_date : null}
+                  onChange={(date) => {
+                    setData((prev) => {
+                      return {
+                        ...prev,
+                        finished_date: date ? date : prev.finished_date,
+                      };
+                    });
+                    setIsOpen((prev) => ({ ...prev, finished_date: false }));
+                  }}
+                  shouldCloseOnSelect={true}
+                  inline
+                />
+              )}
+            </div>
+          </>
+        )}
         <TextField
           sx={{
             "& input": {
@@ -102,7 +164,7 @@ const EditDraggable = ({
           type="text"
           fullWidth
           variant="standard"
-          value={data.taskName}
+          value={HTMLDecode(data.taskName)}
           onChange={(e) => {
             setData((prev) => ({ ...prev, taskName: e.target.value }));
           }}
@@ -134,6 +196,24 @@ const EditDraggable = ({
           )}
           freeSolo
         />
+        <TextField
+          sx={{
+            "& input": {
+              mr: "30px",
+            },
+          }}
+          autoFocus
+          margin="dense"
+          id="sub_project"
+          label="שם תת פרויקט"
+          type="text"
+          fullWidth
+          variant="standard"
+          value={HTMLDecode(data.sub_project) ?? ""}
+          onChange={(e) => {
+            setData((prev) => ({ ...prev, sub_project: e.target.value }));
+          }}
+        />
         <Autocomplete
           value={{
             full_name: data.leader_name,
@@ -160,6 +240,24 @@ const EditDraggable = ({
             <TextField {...params} variant="standard" label="מוביל \ אחראי" />
           )}
         />
+        <TextField
+          sx={{
+            "& input": {
+              mr: "30px",
+            },
+          }}
+          autoFocus
+          margin="dense"
+          id="sub_project"
+          label="נותן המשימה \ מנחה"
+          type="text"
+          fullWidth
+          variant="standard"
+          value={HTMLDecode(data.giver) ?? ""}
+          onChange={(e) => {
+            setData((prev) => ({ ...prev, giver: e.target.value }));
+          }}
+        />
         <Autocomplete
           multiple
           ChipProps={{
@@ -182,7 +280,11 @@ const EditDraggable = ({
           }}
           options={people.map((person) => person.full_name)}
           renderInput={(params) => (
-            <TextField {...params} variant="standard" label="משתתפים נוספים" />
+            <TextField
+              {...params}
+              variant="standard"
+              label="משתתפים \ מבצע המשימה"
+            />
           )}
           freeSolo
           filterOptions={(options, params) => {
@@ -212,7 +314,7 @@ const EditDraggable = ({
           fullWidth
           multiline
           variant="standard"
-          value={data.comment ? data.comment : ""}
+          value={HTMLDecode(data.comment) ?? ""}
           onChange={(e) => {
             setData((prev) => ({ ...prev, comment: e.target.value }));
           }}
@@ -234,13 +336,16 @@ const EditDraggable = ({
             editItem(
               index,
               data.id,
-              data.taskName,
+              HTMLDecode(data.taskName) ?? "",
               data.leader_id,
               data.project_id,
+              HTMLDecode(data.sub_project) ?? " ",
               data.otherMembers,
               data.status,
               data.deadLine,
-              data.comment
+              HTMLDecode(data.comment),
+              HTMLDecode(data.giver),
+              data.finished_date
             );
             setInEdit(false);
           }}

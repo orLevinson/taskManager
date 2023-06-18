@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import sectorCtx from "../../shared/context/SectorCtx";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import { Button } from "@mui/material";
 
 const ProjectLine = ({
   project,
@@ -14,6 +15,7 @@ const ProjectLine = ({
 }) => {
   const [projectValue, setProjectValue] = useState(project.project_name);
   const { editProject, deleteProject } = useContext(sectorCtx);
+  const [inWarning, setInWarning] = useState(false);
 
   useEffect(() => {
     setProjectValue(project.project_name);
@@ -50,15 +52,40 @@ const ProjectLine = ({
         >
           <SaveIcon color="primary" />
         </IconButton>
-        <IconButton
-          sx={{ p: "10px" }}
-          aria-label="directions"
-          onClick={() => {
-            deleteProject(project.project_id);
-          }}
-        >
-          <DeleteForeverIcon color="error" />
-        </IconButton>
+        {!inWarning ? (
+          <IconButton
+            sx={{ p: "10px" }}
+            aria-label="directions"
+            onClick={() => {
+              setInWarning(true);
+            }}
+          >
+            {/*  */}
+            <DeleteForeverIcon color="error" />
+          </IconButton>
+        ) : (
+          <div
+            style={{
+              backgroundColor: "#edf3f5",
+              borderRadius: 4,
+              paddingRight: 4,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            בטוח?
+            <Button
+              color="error"
+              onClick={() => deleteProject(project.project_id)}
+            >
+              כן, מחק
+            </Button>
+            <Button color="info" onClick={() => setInWarning(false)}>
+              לא חזור
+            </Button>
+          </div>
+        )}
       </Paper>
     </div>
   );

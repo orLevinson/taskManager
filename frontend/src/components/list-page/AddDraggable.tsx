@@ -12,6 +12,7 @@ import "./listPage.css";
 import listCtx from "../../shared/context/ListCtx";
 import sectorCtx from "../../shared/context/SectorCtx";
 import { addItemProperties } from "../../types/ListCtxTypes";
+import HTMLDecode from "../../shared/HelperFunctions/HTMLDecode";
 
 const filter = createFilterOptions<string>();
 
@@ -30,6 +31,7 @@ const AddDraggable = ({
     leader_name: "",
     project_name: "",
     project_id: "",
+    sub_project: "",
     otherMembers: [],
   });
   const [isOpen, setIsOpen] = useState(false);
@@ -137,6 +139,24 @@ const AddDraggable = ({
           )}
           freeSolo
         />
+        <TextField
+          sx={{
+            "& input": {
+              mr: "30px",
+            },
+          }}
+          autoFocus
+          margin="dense"
+          id="subproject"
+          label="שם התת פרויקט"
+          type="text"
+          fullWidth
+          variant="standard"
+          value={data.sub_project}
+          onChange={(e) => {
+            setData((prev) => ({ ...prev, sub_project: e.target.value }));
+          }}
+        />
         <Autocomplete
           value={{
             full_name: data.leader_name,
@@ -163,6 +183,24 @@ const AddDraggable = ({
             <TextField {...params} variant="standard" label="מוביל \ אחראי" />
           )}
         />
+        <TextField
+          sx={{
+            "& input": {
+              mr: "30px",
+            },
+          }}
+          autoFocus
+          margin="dense"
+          id="sub_project"
+          label="נותן המשימה \ מנחה"
+          type="text"
+          fullWidth
+          variant="standard"
+          value={HTMLDecode(data.giver) ?? ""}
+          onChange={(e) => {
+            setData((prev) => ({ ...prev, giver: e.target.value }));
+          }}
+        />
         <Autocomplete
           multiple
           ChipProps={{
@@ -185,7 +223,11 @@ const AddDraggable = ({
           }}
           options={people.map((person) => person.full_name)}
           renderInput={(params) => (
-            <TextField {...params} variant="standard" label="משתתפים נוספים" />
+            <TextField
+              {...params}
+              variant="standard"
+              label="משתתפים \ מבצע המשימה"
+            />
           )}
           freeSolo
           filterOptions={(options, params) => {
@@ -238,6 +280,7 @@ const AddDraggable = ({
               data.taskName,
               data.leader_id,
               data.project_id,
+              data.sub_project.trim() === "" ? data.sub_project : " ",
               data.otherMembers,
               data.deadLine,
               data.comment

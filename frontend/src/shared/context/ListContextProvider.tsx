@@ -24,9 +24,11 @@ const ListContextProvider = ({ children }: { children: ReactNode }) => {
     taskName,
     leader_id,
     project_id,
+    sub_project,
     otherMembers,
     deadLine,
-    comment
+    comment,
+    giver
   ) => {
     if (!token || !room_id) {
       return;
@@ -41,9 +43,11 @@ const ListContextProvider = ({ children }: { children: ReactNode }) => {
         task_name: taskName,
         user_id: leader_id + "",
         project_id: project_id + "",
+        sub_project: sub_project + " ",
         other_members: otherMembers,
         dead_line: deadLine,
         comment,
+        giver,
       },
       {
         "Content-Type": "application/json",
@@ -60,9 +64,11 @@ const ListContextProvider = ({ children }: { children: ReactNode }) => {
         project_id,
         leader_name: response.data.added_message[0].full_name,
         project_name: response.data.added_message[0].project_name,
+        sub_project,
         otherMembers,
         deadLine,
         comment,
+        giver,
       });
 
       setLoading(false);
@@ -83,10 +89,13 @@ const ListContextProvider = ({ children }: { children: ReactNode }) => {
     taskName,
     leader_id,
     project_id,
+    sub_project,
     otherMembers,
     status,
     deadLine,
-    comment
+    comment,
+    giver,
+    finished_date
   ) => {
     if (!token || !room_id) {
       return;
@@ -103,9 +112,12 @@ const ListContextProvider = ({ children }: { children: ReactNode }) => {
         task_name: taskName,
         user_id: leader_id + "",
         project_id: project_id + "",
+        sub_project: sub_project + " ",
         other_members: otherMembers,
         dead_line: deadLine,
         comment,
+        giver,
+        finished_date,
       },
       {
         "Content-Type": "application/json",
@@ -123,10 +135,13 @@ const ListContextProvider = ({ children }: { children: ReactNode }) => {
         leader_name: response.data.changed_message.full_name,
         project_name: response.data.changed_message.project_name,
         project_id,
+        sub_project,
         otherMembers,
         deadLine,
         comment,
         status,
+        giver,
+        finished_date,
       });
 
       setLoading(false);
@@ -245,10 +260,13 @@ const ListContextProvider = ({ children }: { children: ReactNode }) => {
             leader_name: item.full_name,
             project_name: item.project_name,
             project_id: item.project_id,
+            sub_project: item.sub_project,
             otherMembers: item.other_members,
             deadLine: item.dead_line ? new Date(item.dead_line) : undefined,
+            finished_date: item.finished_date ? new Date(item.finished_date) : undefined,
             status: item.status,
             comment: item.comment,
+            giver: item.giver,
           }));
         }),
       });
