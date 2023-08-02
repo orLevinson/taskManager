@@ -8,6 +8,7 @@ import {
 import { InputLabel } from "@mui/material";
 import { useContext, useState } from "react";
 import roomsCtx from "../../shared/context/RoomCtx";
+import HTMLDecode from "../../shared/HelperFunctions/HTMLDecode";
 import styles from "../list-page/listPage.module.css";
 import RoomManager from "./RoomManager";
 
@@ -42,7 +43,7 @@ const Filters = ({
             {rooms.map((room) => {
               return (
                 <MenuItem key={room.room_id} value={room.room_id}>
-                  {room.room_name}
+                  {HTMLDecode(room.room_name) ?? ""}
                 </MenuItem>
               );
             })}

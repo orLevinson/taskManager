@@ -11,6 +11,7 @@ import { Button, Switch } from "@mui/material";
 import roomsCtx from "../../shared/context/RoomCtx";
 import AutoCompletePicker from "./AutoCompletePicker";
 import { adminPageUserType } from "../../types/AdminTypes";
+import HTMLDecode from "../../shared/HelperFunctions/HTMLDecode";
 
 const UsersTable = ({
   filters,
@@ -64,7 +65,12 @@ const UsersTable = ({
               <TableCell align="center">{user.full_name}</TableCell>
               <TableCell align="center">
                 <AutoCompletePicker
-                  rooms={rooms}
+                  rooms={rooms.map((room) => {
+                    return {
+                      ...room,
+                      room_name: HTMLDecode(room.room_name) ?? "",
+                    };
+                  })}
                   user={user}
                   changeUserRoom={changeUserRoom}
                 />

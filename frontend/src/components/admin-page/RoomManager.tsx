@@ -13,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import roomsCtx from "../../shared/context/RoomCtx";
 import RoomLine from "./RoomLine";
+import HTMLDecode from "../../shared/HelperFunctions/HTMLDecode";
 
 const RoomManager = ({
   inEdit,
@@ -74,7 +75,12 @@ const RoomManager = ({
           </Paper>
         </div>
         {rooms.map((room) => {
-          return <RoomLine key={room.room_id} room={room} />;
+          return (
+            <RoomLine
+              key={room.room_id}
+              room={{ ...room, room_name: HTMLDecode(room.room_name) ?? "" }}
+            />
+          );
         })}
       </DialogContent>
       <DialogActions>
