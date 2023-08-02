@@ -7,6 +7,7 @@ import sectorCtx from "../../shared/context/SectorCtx";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Button } from "@mui/material";
+import HTMLDecode from "../../shared/HelperFunctions/HTMLDecode";
 
 const ProjectLine = ({
   project,
@@ -35,9 +36,9 @@ const ProjectLine = ({
         <InputBase
           sx={{ flex: 1 }}
           placeholder="הזנת תחום"
-          value={projectValue}
+          value={HTMLDecode(projectValue) ?? ""}
           onChange={(e) => {
-            setProjectValue(e.target.value);
+            setProjectValue(HTMLDecode(e.target.value) ?? "");
           }}
           inputProps={{ "aria-label": "הזנת תחום" }}
         />
@@ -46,7 +47,7 @@ const ProjectLine = ({
           sx={{ p: "10px" }}
           aria-label="directions"
           onClick={() => {
-            editProject(projectValue, project.project_id);
+            editProject(HTMLDecode(projectValue) ?? "", project.project_id);
             setProjectValue("");
           }}
         >

@@ -126,13 +126,15 @@ const AddDraggable = ({
                   : "",
               project_name:
                 newValue && typeof newValue === "object"
-                  ? newValue.project_name
+                  ? HTMLDecode(newValue.project_name) ?? ""
                   : "",
             }));
           }}
           options={projects}
           getOptionLabel={(option) =>
-            typeof option === "object" ? option.project_name : ""
+            typeof option === "object"
+              ? HTMLDecode(option.project_name) ?? ""
+              : ""
           }
           renderInput={(params) => (
             <TextField {...params} variant="standard" label="תחום" />
@@ -280,12 +282,22 @@ const AddDraggable = ({
               data.taskName,
               data.leader_id,
               data.project_id,
-              data.sub_project.trim() === "" ? data.sub_project : " ",
+              data.sub_project.trim() !== "" ? data.sub_project : " ",
               data.otherMembers,
               data.deadLine,
-              data.comment
+              data.comment,
+              data.giver
             );
             setInEdit(false);
+            setData({
+              taskName: "",
+              leader_id: "",
+              leader_name: "",
+              project_name: "",
+              project_id: "",
+              sub_project: "",
+              otherMembers: [],
+            });
           }}
         >
           הוסף

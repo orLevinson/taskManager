@@ -10,6 +10,8 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HTMLDecode from "../../shared/HelperFunctions/HTMLDecode";
 
 const DraggableContent = ({ item }: { item: listItem }) => {
+  console.log(item.comment);
+
   const date = useMemo(() => {
     if (item.deadLine) {
       const newDate = item.deadLine;
@@ -73,7 +75,7 @@ const DraggableContent = ({ item }: { item: listItem }) => {
           }}
         >
           <Chip
-            label={item.leader_name}
+            label={HTMLDecode(item.leader_name)}
             sx={{
               background: "#f58453",
               "& .MuiChip-label": {
@@ -98,7 +100,7 @@ const DraggableContent = ({ item }: { item: listItem }) => {
             return (
               <Chip
                 key={index}
-                label={member}
+                label={HTMLDecode(member)}
                 sx={{
                   background: "#fc429f",
                   "& .MuiChip-label": {

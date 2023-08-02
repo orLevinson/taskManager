@@ -183,13 +183,15 @@ const EditDraggable = ({
                   : "",
               project_name:
                 newValue && typeof newValue === "object"
-                  ? newValue.project_name
+                  ? HTMLDecode(newValue.project_name) ?? ""
                   : "",
             }));
           }}
           options={projects}
           getOptionLabel={(option) =>
-            typeof option === "object" ? option.project_name : ""
+            typeof option === "object"
+              ? HTMLDecode(option.project_name) ?? ""
+              : ""
           }
           renderInput={(params) => (
             <TextField {...params} variant="standard" label="תחום" />
@@ -267,18 +269,23 @@ const EditDraggable = ({
               },
             },
           }}
-          value={data.otherMembers}
+          value={data.otherMembers.map((val) => HTMLDecode(val) ?? "")}
           onChange={(_event, newValue) => {
             if (typeof newValue === "string") {
-              setData((prev) => ({ ...prev, otherMembers: [newValue] }));
+              setData((prev) => ({
+                ...prev,
+                otherMembers: [HTMLDecode(newValue) ?? ""],
+              }));
             } else {
               setData((prev) => ({
                 ...prev,
-                otherMembers: newValue ? newValue : [],
+                otherMembers: newValue
+                  ? newValue.map((val) => HTMLDecode(val) ?? "")
+                  : [],
               }));
             }
           }}
-          options={people.map((person) => person.full_name)}
+          options={people.map((person) => HTMLDecode(person.full_name) ?? "")}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -316,7 +323,10 @@ const EditDraggable = ({
           variant="standard"
           value={HTMLDecode(data.comment) ?? ""}
           onChange={(e) => {
-            setData((prev) => ({ ...prev, comment: e.target.value }));
+            setData((prev) => ({
+              ...prev,
+              comment: HTMLDecode(e.target.value),
+            }));
           }}
         />
       </DialogContent>
@@ -340,7 +350,7 @@ const EditDraggable = ({
               data.leader_id,
               data.project_id,
               HTMLDecode(data.sub_project) ?? " ",
-              data.otherMembers,
+              data.otherMembers.map((val) => HTMLDecode(val) ?? ""),
               data.status,
               data.deadLine,
               HTMLDecode(data.comment),

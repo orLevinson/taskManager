@@ -36,6 +36,7 @@ class dbSchema {
         sub_project VARCHAR NOT NULL DEFAULT '',
         status INTEGER CHECK (status IN (0, 1, 2)),
         other_members VARCHAR[],
+        giver VARCHAR,
         dead_line DATE,
         finished_date DATE,
         comment VARCHAR
